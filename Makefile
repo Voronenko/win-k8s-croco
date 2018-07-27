@@ -1,10 +1,12 @@
 deploy:
 	kubectl create -f croc-hunter.yaml --save-config
 	kubectl create -f croc-hunter-ingress.yaml --save-config
+	kubectl create -f croc-hunter-nodeport.yml --save-config
 
 apply:
 	kubectl apply -f croc-hunter.yaml
 	kubectl apply -f croc-hunter-ingress.yaml
+	kubectl apply -f croc-hunter-nodeport.yml --save-config
 
 dashboard:
 	gnome-open http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/#!/overview?namespace=default

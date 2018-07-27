@@ -288,7 +288,7 @@ you.
 Thanks!
 
 
-Code in action: 
+## Code in action: 
 
 Repository with code snippets above:  https://github.com/Voronenko/win-k8s-croco
 Croco game image: https://github.com/voronenko-p/docker-sample-image which is slightly modified https://github.com/lachie83/croc-hunter (fixed absolute references to resources to allow proper run under proxy)
