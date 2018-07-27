@@ -8,7 +8,7 @@ cluster, which you can use for your experiments as well.
 ![UI](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_1.png "Kubernetes on Docker for windows")
 
 
-Even if Windows has WSL, it still does not behave in a way how my usual linux workplace do, this on my local lab first (note: insecure) step I do - is exposing my windows kubernetes and docker ports to my linux notebook
+Even if Windows has WSL, it still does not behave in a way how my usual linux workplace does, this on my local lab first (note: insecure) step I do - is exposing my windows kubernetes and docker ports to my linux notebook
 
 Expose docker tcp daemon on 2375
 
@@ -276,7 +276,7 @@ Option(b) - basically I am also able to access port exposed on a box from
 my external linux box as well:
 
 
-![Hunter accessible on external network interface](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_4.png "Hunter accessible on external network interface")
+![Hunter accessible on external network interface](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_5.png "Hunter accessible on external network interface")
 
 
 Which is kind of cool.
