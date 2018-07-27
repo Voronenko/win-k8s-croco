@@ -1,12 +1,14 @@
-#Built-in kubernetes in docker for windows as a quick alternative to minikube.
+# Built-in kubernetes in docker for windows as a quick alternative to minikube.
 
 I am a linux guy, but one of my work boxes is Intel NUC under windows with quite good memory specs.
 So far I was using it to offload docker builds and use some VMs on a hyperV. Latest docker update
 has made things even more interesting - Docker for windows now is capable to run single node Kubernetes 1.1x 
 cluster, which you can use for your experiments as well.
 
-Even if Windows has WSL, it still does not behave in a way how my usual linux workplace do,
-so first (note: insecure) step I do - is exposing my kubernetes and docker ports to my local network
+![UI](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_1.png "Kubernetes on Docker for windows")
+
+
+Even if Windows has WSL, it still does not behave in a way how my usual linux workplace do, this on my local lab first (note: insecure) step I do - is exposing my windows kubernetes and docker ports to my linux notebook
 
 Expose docker tcp daemon on 2375
 
@@ -22,7 +24,7 @@ SET EXTERNAL_IP=192.168.2.2
 netsh interface portproxy add v4tov4 listenport=6445 connectaddress=127.0.0.1 connectport=6445 listenaddress=%EXTERNAL_IP% protocol=tcp
 ```
 
-Accessing your cluster with kubectl from your linux machine:
+## Accessing your cluster with kubectl from your linux machine:
 
 by default docker patches your windows kube config with changes similar to below:
 
@@ -94,6 +96,12 @@ subjects:
 
 Now you can run `kubectl proxy` in some console, and also some better control over kubernetes cluster, accessible on
 `http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/#!/overview?namespace=default`
+
+
+![Dashboard](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_2.png "Kubernetes Dashboard")
+
+
+## Prof of concept deployment
 
 Now lets test deploy CrocoHunter application
 
@@ -190,7 +198,14 @@ croc-hunter-55c74b5b69-sxn9b   1/1       Running   0          1m
 
 ```
 
-Definitely works.
+Definitely works. We can also access the application via kube proxy
+`http://localhost:8001/api/v1/namespaces/default/services/http:croc-hunter:/proxy/`
+
+
+![Hunter via proxy](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_3.png "Hunter exposed via proxy")
+
+
+## Exposing deployment externally
 
 As usual application has at least one endpoint that can be accessed externally,
 we would like to emulate also that functionality (note: redhat minishift does this out of the box).
@@ -211,6 +226,15 @@ kubernetes              ClusterIP   10.96.0.1       <none>        443/TCP       
 ```
 
 note tcp port 30815 above.
+
+
+How you can access exposed ports?
+
+Option (a), on the same windows box you can just navigate to http://127.0.0.1:30815/
+
+![Hunter accessible via port on localhost](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_4.png "Hunter accessible via port on localhost")
+
+
 
 We can achieve the same effect from the yaml definition
 
@@ -247,21 +271,27 @@ kubernetes                     ClusterIP   10.96.0.1       <none>        443/TCP
 
 note tcp port as well `30688`.
 
-How you can access exposed ports?
-
-Option (a), on the same windows box you can just navigate to http://127.0.0.1:30815/
 
 Option(b) - basically I am also able to access port exposed on a box from
 my external linux box as well:
+
+
+![Hunter accessible on external network interface](https://raw.githubusercontent.com/Voronenko/win-k8s-croco/master/images/kubernetes_4.png "Hunter accessible on external network interface")
+
 
 Which is kind of cool.
 
 Summary: you can use built-in single node kubernetes node for small playground with
 your kubernetes experiments not only locally, but also on remote using set of tools
-you 
+you.
+
+Thanks!
 
 
 Code in action: 
+
+Repository with code snippets above:  https://github.com/Voronenko/win-k8s-croco
+Croco game image: https://github.com/voronenko-p/docker-sample-image which is slightly modified https://github.com/lachie83/croc-hunter (fixed absolute references to resources to allow proper run under proxy)
 
 for the first time
 
@@ -277,7 +307,6 @@ for subsequent...
 make apply 
 ```
 
-
 Debugging access - requires running `kubectl proxy` in background...
 
 Launch kubernetes dashboard from url `http://localhost:8001/api/v1/namespaces/kube-system/services/http:kubernetes-dashboard:/proxy/#!/overview?namespace=default` if you have installed one
@@ -287,14 +316,10 @@ Launch kubernetes dashboard from url `http://localhost:8001/api/v1/namespaces/ku
 make dashboard
 ```
 
-Launch deploymed micro service `http://localhost:8001/api/v1/namespaces/default/services/http:croc-hunter:/proxy/`
+Launch deployed micro service `http://localhost:8001/api/v1/namespaces/default/services/http:croc-hunter:/proxy/`
 
 ```sh
 
 make hunter
 ```
-
-
-
-
 
